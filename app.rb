@@ -10,13 +10,11 @@ $db = YAML::Store.new './data.yaml'
 def db
   $db
 end
-db.transaction do
-  db['messages'] = [] unless db['messages']
-end
 
-def make_items(maker)
+def make_items(maker, room_name)
   db.transaction do
-    db['messages'].reverse.take(200).each do |mes|
+    db[room] ||= []
+    db[room].reverse.take(200).each do |mes|
       item = maker.items.new_item
       item.title = mes['room'] 
       item.link = "lingr.com/room/#{mes['room']}/chat"
@@ -26,13 +24,13 @@ def make_items(maker)
   end
 end
 
-get '/rss' do
+get '/:room' do |room|
   RSS::Maker.make('2.0') do |maker|
     maker.channel.title = "Lingr"
     maker.channel.description = ' '
     maker.channel.link = "lingr.com"
     maker.items.do_sort = true
-    make_items(maker)
+    make_items(maker, room)
   end.to_s
 end
 
@@ -45,7 +43,8 @@ post '/lingr' do
   j['events'].each do |e|
     if e['message']
       db.transaction do
-        db['messages'] << e['message']
+        db[room] ||= []
+        db[room] << e['message']
       end
     end
   end
