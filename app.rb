@@ -6,7 +6,7 @@ require 'rss/maker'
 require 'json'
 require 'yaml/store'
 
-$db = YAML::Store.new File.join(__FILE__, 'data.yaml')
+$db = YAML::Store.new './data.yaml'
 def db
   p $db
   $db
@@ -21,7 +21,7 @@ def make_items(maker)
       item = maker.items.new_item
       item.title = mes['room'] 
       item.link = "lingr.com/room/#{mes['room']}/chat"
-      item.description = "#{mes['speaker_id']} <br /> <img src='#{mes['icon_url']}' /> #{mes['text']} "
+      item.description = "<img src='#{mes['icon_url']}' />#{mes['speaker_id']}: #{mes['text']} "
       item.date = Time.parse(mes['timestamp'])
     end
   end
