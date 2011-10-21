@@ -8,7 +8,6 @@ require 'yaml/store'
 
 $db = YAML::Store.new './data.yaml'
 def db
-  p $db
   $db
 end
 db.transaction do
