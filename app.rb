@@ -11,7 +11,7 @@ def db
   $db
 end
 
-def make_items(maker, room_name)
+def make_items(maker, room)
   db.transaction do
     db[room] ||= []
     db[room].reverse.take(200).each do |mes|
@@ -42,6 +42,7 @@ post '/lingr' do
   j = JSON.parse request.body.read
   j['events'].each do |e|
     if e['message']
+      room = e['message']['room']
       db.transaction do
         db[room] ||= []
         db[room] << e['message']
