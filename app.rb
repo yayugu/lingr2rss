@@ -16,9 +16,9 @@ def make_items(maker, room)
     db[room] ||= []
     db[room].reverse.take(200).each do |mes|
       item = maker.items.new_item
-      item.title = mes['room'] 
+      item.title = mes['speaker_id'] 
       item.link = "lingr.com/room/#{mes['room']}/chat"
-      item.description = "<img src='#{mes['icon_url']}' />#{mes['speaker_id']}: #{mes['text']} "
+      item.description = "<img src='#{mes['icon_url']}' /> #{mes['text']} "
       item.date = Time.parse(mes['timestamp'])
     end
   end
@@ -26,7 +26,7 @@ end
 
 get '/:room' do |room|
   RSS::Maker.make('2.0') do |maker|
-    maker.channel.title = "Lingr"
+    maker.channel.title = "#{room} / Lingr"
     maker.channel.description = ' '
     maker.channel.link = "lingr.com"
     maker.items.do_sort = true
